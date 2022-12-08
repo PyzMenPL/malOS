@@ -1,2 +1,4 @@
 # malOS
-Operating system like program
+Inspired by Day 7 Advent of code challange I managed to create my own operating system like program.
+
+In malOS you can: create files and folders, move around folders and exit the program :D
