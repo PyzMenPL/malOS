@@ -182,15 +182,18 @@ class Folder(File):
         # If it reaches the destination folder, it saves the file.
         # If the condition did not check if the file was created, it would still be saved in the wrong places
 
-        # If path is file
-        if isinstance(path, type(File('', 0))):
-            # The file is added to desired folder and to all parent directories
-            # If the desired folder is not found the file is added to the first folder that exists
-            self.contains.append(path)
+        # If we reached our destination
+        if not dst_folder_path:
+            # If path is file
+            if isinstance(path, type(File('', 0))):
+                # The file is added to desired folder and to all parent directories
+                # If the desired folder is not found the file is added to the first folder that exists
+                if not path.is_created:
+                    path.is_created = True
+                    self.contains.append(path)
 
-        # If path is folder
-        else:
-            if dst_folder_path == [] and path[0].is_created is False:
+            # if path is folder
+            elif path[0].is_created is False:
                 # Once added, it changes its state so that the file is not saved again
                 path[0].is_created = True
 
