@@ -65,16 +65,28 @@ class Filesystem:
                 print("\tFolder '" + command[1] + "' created successfully!")
 
         elif command[0] == 'mkfile':
+            path = self.current_directory[:]
+            user_input = command[1].split("/")
             file = None
+
+            if '/' in command[1]:
+                if command[1][0] == '/':
+                    path = []
+
+                for element in user_input:
+                    if element != '':
+                        path.append(element)
+
             # User specified name only
             if len(command) == 2:
-                file = File(command[1], 0)
+                file = File(user_input[-1], 0)
 
             # User specified both parameters
             elif len(command) == 3:
-                file = File(command[1], command[2])
+                file = File(user_input[-1], command[2])
 
-            self.root.add(file, self.current_directory[:])
+            print(file, path)
+            self.root.add(file, path[:-1])
             print("\tFile '" + command[1] + "' created successfully!")
 
         elif command[0] == 'pwd':
@@ -165,24 +177,34 @@ class Folder(File):
         # Instead of printing out <class 'str'>, it prints out as follows
         return "'Folder '{}'".format(self.name)
 
-    def add(self, folders, dst_folder_path) -> None:
+    # path can be list of folder or single file
+    def add(self, path, dst_folder_path) -> None:
         # If it reaches the destination folder, it saves the file.
         # If the condition did not check if the file was created, it would still be saved in the wrong places
-        if dst_folder_path == [] and folders[0].is_created is False:
-            # Once added, it changes its state so that the file is not saved again
-            folders[0].is_created = True
 
-            # We are adding folder to path because we want to create folder inside of it
-            dst_folder_path.append(folders[0].name)
+        # If path is file
+        if isinstance(path, type(File('', 0))):
+            # The file is added to desired folder and to all parent directories
+            # If the desired folder is not found the file is added to the first folder that exists
+            self.contains.append(path)
 
-            # Adding folder into desired one
-            self.contains.append(folders.pop(0))
+        # If path is folder
+        else:
+            if dst_folder_path == [] and path[0].is_created is False:
+                # Once added, it changes its state so that the file is not saved again
+                path[0].is_created = True
 
-            # If there are still folders to add continue
-            if len(folders) != 0:
-                self.add(folders, dst_folder_path)
+                # We are adding folder to path because we want to create folder inside of it
+                dst_folder_path.append(path[0].name)
 
-            return None
+                # Adding folder into desired one
+                self.contains.append(path.pop(0))
+
+                # If there are still folders to add continue
+                if len(path) != 0:
+                    self.add(path, dst_folder_path)
+
+                return None
 
         # For each item in the folder
         for child_folder in self.contains:
@@ -193,7 +215,7 @@ class Folder(File):
             # If the item in the folder list is a folder
             if isinstance(child_folder, type(Folder(''))) and child_folder.name == dst_folder_path[0]:
                 del dst_folder_path[0]
-                child_folder.add(folders, dst_folder_path)
+                child_folder.add(path, dst_folder_path)
 
     def sizes(self):
         for child_folder in self.contains:
