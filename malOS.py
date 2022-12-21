@@ -30,11 +30,13 @@ class Filesystem:
 
         elif command[0] == 'cd':
             if command[1] == '..':
+                # If there is a folder you can go back to
                 if self.current_directory:
                     del self.current_directory[-1]
                 else:
                     print("\tYou can't go back further!")
             else:
+                print(command[1].split('/'))
                 self.cd(command[1])
 
         elif command[0] == 'ls':
@@ -42,9 +44,13 @@ class Filesystem:
 
         # Add directory or file if it doesn't exist
         elif command[0] == 'mkdir':
-            file = Folder(command[1])
-            self.root.add(file, self.current_directory[:])
-            print("\tFolder '" + command[1] + "' created successfully!")
+            # If the name of the folder is not given
+            if command[-1] == "mkdir":
+                print("\tProvide folder name!")
+            else:
+                file = Folder(command[1])
+                self.root.add(file, self.current_directory[:])
+                print("\tFolder '" + command[1] + "' created successfully!")
 
         elif command[0] == 'mkfile':
             file = None
@@ -76,7 +82,7 @@ class Filesystem:
             print("\tType 'help' to see all available commands")
             return
 
-    def cd(self, dst_name=None) -> None:
+    def cd(self, dst_name: tuple) -> None:
         if dst_name == '/':
             self.current_directory = []
         else:
