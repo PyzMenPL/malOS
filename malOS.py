@@ -315,8 +315,8 @@ class Folder(File):
 if __name__ == "__main__":
     print("Type 'help' to see all available commands")
     fastFS = Filesystem()
-    fastFS.command("mkdir a/b/c")
-    fastFS.command("mkfile plik1")
+    #fastFS.command("mkdir a/b/c")
+    #fastFS.command("mkfile plik1")
     #fastFS.command("mkfile a/plik2")
     fastFS.command("ls")
     while True:
