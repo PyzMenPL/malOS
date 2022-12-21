@@ -136,7 +136,7 @@ class File:
         self.is_created = False
 
     def __str__(self) -> str:
-        return "═ {} ({}, size={})".format(self.name, "file", self.size)
+        return "{} ({}, size={})".format(self.name, "file", self.size)
 
     def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
@@ -171,9 +171,9 @@ class Folder(File):
     def __str__(self) -> str:
         # If we need a folder name
         if self.size == 0:
-            return "╦═ {} (dir)".format(self.name)
+            return "{} (dir)".format(self.name)
         else:
-            return "╦═ {} (dir, size={})".format(self.name, self.size)
+            return "{} (dir, size={})".format(self.name, self.size)
 
     def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
@@ -234,26 +234,62 @@ class Folder(File):
                 # After the size is calculated add it to self.size
                 self.size += int(child_folder.size)
 
-    def print(self, depth=0) -> None:
+    def print(self, depth=None, what_to_add=None) -> None:
         """View the contents of subfolders"""
-        # We display the directory we started with
-        if depth == 0:
+        # print(what_to_add)
+
+        # Doesn't activate on first folder
+        if what_to_add is not None:
+            # Receives information from previous folder
+            depth.append(what_to_add)
+
+        # Doesn't activate on first folder
+        if depth is None:
+            depth = []
             print(self.__str__())
-            depth += 1
+
+        # If my folder contains 2 items print ║ else none
+        if len(self.contains) >= 2:
+            what_to_add = True
+        else:
+            what_to_add = False
 
         # If the folder is empty
         if not self.contains:
-            print((depth - 1) * '║' + '╚' + "[Empty]")
+            #print(depth)
+            # Display proper spacing
+            for dependency in depth:
+                if dependency:
+                    print('║   ', end='')
+                else:
+                    print('    ', end='')
+            print('╚══ ' + "[Empty]")
             return None
+
+        # If the folder is not empty
         else:
             # For each item in the folder
-            for child_folder in self.contains:
-                # Display name with proper spacing
-                print((depth - 1) * '║' + '╠' + child_folder.__str__())
+            for index in range(0, len(self.contains)):
+                #print(index, len(self.contains), self.contains)
+                #print(depth)
+                # Display proper spacing
+                for dependency in depth:
+                    if dependency:
+                        print('║   ', end='')
+                    else:
+                        print('    ', end='')
+                #print()
+
+                # If we are printing last element
+                if index == len(self.contains) - 1:
+                    print('╚══ ' + self.contains[index].__str__())
+                # If we are printing any other element
+                else:
+                    print('╠══ ' + self.contains[index].__str__())
+
                 # If the item from the folder list is a folder
-                if isinstance(child_folder, type(Folder(''))):
-                    # Display the contents of the subfolder
-                    child_folder.print(depth + 1)
+                if isinstance(self.contains[index], type(Folder(''))):
+                    self.contains[index].print(depth=depth[:], what_to_add=what_to_add)
 
     def goto(self, path_to_folder: list, result=bool) -> bool:
         """Internal method used to check if the folder that we want to enter exists"""
@@ -279,5 +315,9 @@ class Folder(File):
 if __name__ == "__main__":
     print("Type 'help' to see all available commands")
     fastFS = Filesystem()
+    fastFS.command("mkdir a/b/c")
+    fastFS.command("mkfile plik1")
+    #fastFS.command("mkfile a/plik2")
+    fastFS.command("ls")
     while True:
         fastFS.command(input('$ '))
