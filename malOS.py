@@ -102,7 +102,10 @@ class Filesystem:
             sys.exit()
 
         else:
-            print("\tInvalid syntax: ", command)
+            print("\tInvalid syntax: ", end='')
+            for word in command:
+                print(word, end=" ")
+            print()
             print("\tType 'help' to see all available commands")
             return
 
@@ -124,21 +127,21 @@ class Filesystem:
             # If result is true this means that all folders exist
             if result:
                 self.current_directory = current_dirs
-                print("\tPrzemieszczenie udane!")
+                print("\tFolder changed successfully!")
 
 
 class File:
-    def __init__(self, name: str, size: int):
+    def __init__(self, name: str, size: int) -> None:
         self.name = name
         self.size = size
         self.is_created = False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "- {} ({}, size={})".format(self.name, "file", self.size)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
-        return "Plik '{}'".format(self.name)
+        return "File '{}'".format(self.name)
 
 
 class Folder(File):
@@ -148,14 +151,14 @@ class Folder(File):
         super().__init__(name=name, size=0)
         self.contains = []
 
-    def __iter__(self):
+    def __iter__(self) -> object:
         # If iteration starts, we start from zero
         self.index = 0
         # We end up with the last item on the list
         self.limit = len(self.contains)
         return self
 
-    def __next__(self):
+    def __next__(self) -> object:
         # If next() is called we increment the index
         self.index += 1
 
@@ -173,9 +176,9 @@ class Folder(File):
         else:
             return "- {} (dir, size={})".format(self.name, self.size)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
-        return "'Folder '{}'".format(self.name)
+        return "Folder '{}'".format(self.name)
 
     # path can be list of folder or single file
     def add(self, path, dst_folder_path) -> None:
@@ -184,7 +187,7 @@ class Folder(File):
 
         # If we reached our destination
         if not dst_folder_path:
-            # If path is file
+            # If path is a file
             if isinstance(path, type(File('', 0))):
                 # The file is added to desired folder and to all parent directories
                 # If the desired folder is not found the file is added to the first folder that exists
@@ -197,7 +200,7 @@ class Folder(File):
                 # Once added, it changes its state so that the file is not saved again
                 path[0].is_created = True
 
-                # We are adding folder to path because we want to create folder inside of it
+                # We are adding folder to path because we want to create folder inside it
                 dst_folder_path.append(path[0].name)
 
                 # Adding folder into desired one
@@ -220,7 +223,7 @@ class Folder(File):
                 del dst_folder_path[0]
                 child_folder.add(path, dst_folder_path)
 
-    def sizes(self):
+    def sizes(self) -> None:
         for child_folder in self.contains:
             # If I am a folder
             if isinstance(self, type(Folder(''))):
@@ -269,7 +272,7 @@ class Folder(File):
 
             # If folder doesn't exists print error and return False
             else:
-                print("\tNie znaleziono folderu ", path_to_folder[0])
+                print("\tFolder ", path_to_folder[0], " not found")
                 return False
 
         return True
