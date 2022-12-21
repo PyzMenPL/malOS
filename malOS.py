@@ -47,8 +47,21 @@ class Filesystem:
             if command[-1] == "mkdir":
                 print("\tProvide folder name!")
             else:
-                file = Folder(command[1])
-                self.root.add(file, self.current_directory[:])
+                # Declaring variables
+                folders = []
+                path_to_pass = self.current_directory[:]
+
+                # If the folder names starts with '/' create them in root directory
+                if command[1][0] == "/":
+                    path_to_pass = []
+
+                # Save directories in list
+                for folder in command[1].split("/"):
+                    if folder != '':
+                        folders.append(Folder(folder))
+
+                # Add folders
+                self.root.add(folders, path_to_pass)
                 print("\tFolder '" + command[1] + "' created successfully!")
 
         elif command[0] == 'mkfile':
@@ -152,14 +165,23 @@ class Folder(File):
         # Instead of printing out <class 'str'>, it prints out as follows
         return "'Folder '{}'".format(self.name)
 
-    def add(self, file, dst_folder_path) -> None:
+    def add(self, folders, dst_folder_path) -> None:
         # If it reaches the destination folder, it saves the file.
         # If the condition did not check if the file was created, it would still be saved in the wrong places
-        if dst_folder_path == [] and file.is_created is False:
-            self.contains.append(file)
-
+        if dst_folder_path == [] and folders[0].is_created is False:
             # Once added, it changes its state so that the file is not saved again
-            file.is_created = True
+            folders[0].is_created = True
+
+            # We are adding folder to path because we want to create folder inside of it
+            dst_folder_path.append(folders[0].name)
+
+            # Adding folder into desired one
+            self.contains.append(folders.pop(0))
+
+            # If there are still folders to add continue
+            if len(folders) != 0:
+                self.add(folders, dst_folder_path)
+
             return None
 
         # For each item in the folder
@@ -171,7 +193,7 @@ class Folder(File):
             # If the item in the folder list is a folder
             if isinstance(child_folder, type(Folder(''))) and child_folder.name == dst_folder_path[0]:
                 del dst_folder_path[0]
-                child_folder.add(file, dst_folder_path)
+                child_folder.add(folders, dst_folder_path)
 
     def sizes(self):
         for child_folder in self.contains:
