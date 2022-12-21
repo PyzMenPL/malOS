@@ -85,7 +85,6 @@ class Filesystem:
             elif len(command) == 3:
                 file = File(user_input[-1], command[2])
 
-            print(file, path)
             self.root.add(file, path[:-1])
             print("\tFile '" + command[1] + "' created successfully!")
 
@@ -137,7 +136,7 @@ class File:
         self.is_created = False
 
     def __str__(self) -> str:
-        return "- {} ({}, size={})".format(self.name, "file", self.size)
+        return "═ {} ({}, size={})".format(self.name, "file", self.size)
 
     def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
@@ -172,9 +171,9 @@ class Folder(File):
     def __str__(self) -> str:
         # If we need a folder name
         if self.size == 0:
-            return "- {} (dir)".format(self.name)
+            return "╦═ {} (dir)".format(self.name)
         else:
-            return "- {} (dir, size={})".format(self.name, self.size)
+            return "╦═ {} (dir, size={})".format(self.name, self.size)
 
     def __repr__(self) -> str:
         # Instead of printing out <class 'str'>, it prints out as follows
@@ -239,23 +238,22 @@ class Folder(File):
         """View the contents of subfolders"""
         # We display the directory we started with
         if depth == 0:
-            print(depth * '\t', self)
+            print(self.__str__())
             depth += 1
 
         # If the folder is empty
         if not self.contains:
-            print(depth * '\t', "[Empty]")
+            print((depth - 1) * '║' + '╚' + "[Empty]")
             return None
-
-        # For each item in the folder
-        for child_folder in self.contains:
-            # Display name with proper spacing
-            print(depth * '\t', child_folder)
-
-            # If the item from the folder list is a folder
-            if isinstance(child_folder, type(Folder(''))):
-                # Display the contents of the subfolder
-                child_folder.print(depth + 1)
+        else:
+            # For each item in the folder
+            for child_folder in self.contains:
+                # Display name with proper spacing
+                print((depth - 1) * '║' + '╠' + child_folder.__str__())
+                # If the item from the folder list is a folder
+                if isinstance(child_folder, type(Folder(''))):
+                    # Display the contents of the subfolder
+                    child_folder.print(depth + 1)
 
     def goto(self, path_to_folder: list, result=bool) -> bool:
         """Internal method used to check if the folder that we want to enter exists"""
