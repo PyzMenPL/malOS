@@ -36,8 +36,7 @@ class Filesystem:
                 else:
                     print("\tYou can't go back further!")
             else:
-                print(command[1].split('/'))
-                self.cd(command[1])
+                self.cd(command[1].split('/'))
 
         elif command[0] == 'ls':
             self.root.print()
@@ -82,11 +81,25 @@ class Filesystem:
             print("\tType 'help' to see all available commands")
             return
 
-    def cd(self, dst_name: tuple) -> None:
-        if dst_name == '/':
+    def cd(self, dst_name: list) -> None:
+        # If we want to go to root directory
+        if dst_name == ['', '']:
             self.current_directory = []
+
+        # If we want to go to directory different from root
         else:
-            self.current_directory.append(dst_name)
+            # Creating the full path to destination folder (current_dirs)
+            current_dirs = self.current_directory[:]
+
+            for folder in dst_name:
+                current_dirs.append(folder)
+
+            result = self.root.goto(current_dirs[:])
+
+            # If result is true this means that all folders exist
+            if result:
+                self.current_directory = current_dirs
+                print("\tPrzemieszczenie udane!")
 
 
 class File:
@@ -193,6 +206,26 @@ class Folder(File):
             if isinstance(child_folder, type(Folder(''))):
                 # Display the contents of the subfolder
                 child_folder.print(depth + 1)
+
+    def goto(self, path_to_folder: list, result=bool) -> bool:
+        """Internal method used to check if the folder that we want to enter exists"""
+        # If the list is not yet empty
+        if path_to_folder:
+            # Checking if the folder next exists
+            for sub_folder in self.contains:
+                # If folder exists
+                if path_to_folder[0] == sub_folder.name:
+                    # Delete the folder from list
+                    del path_to_folder[0]
+                    # Pass modified list further and return True or False
+                    return sub_folder.goto(path_to_folder, result)
+
+            # If folder doesn't exists print error and return False
+            else:
+                print("\tNie znaleziono folderu ", path_to_folder[0])
+                return False
+
+        return True
 
 
 if __name__ == "__main__":
