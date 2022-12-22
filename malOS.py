@@ -8,14 +8,18 @@ class Filesystem:
         # List of folder names
         self.current_directory = []
 
-    def command(self, command) -> None:
+    def command(self, command) -> str:
         command = command.split()
 
         # If user inputs nothing
         if len(command) < 1:
             print("\tInvalid syntax: ", command)
             print("\tType 'help' to see all available commands")
-            return
+
+            if self.current_directory:
+                return self.current_directory[-1]
+            else:
+                return '/'
 
         if command[0] == 'help':
             print("\tcd <name> - makes you enter the folder <name>")
@@ -106,7 +110,11 @@ class Filesystem:
                 print(word, end=" ")
             print()
             print("\tType 'help' to see all available commands")
-            return
+
+        if self.current_directory:
+            return self.current_directory[-1]
+        else:
+            return '/'
 
     def cd(self, dst_name: list) -> None:
         # If we want to go to root directory
