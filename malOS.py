@@ -66,7 +66,6 @@ class Filesystem:
 
                 # Add folders
                 self.root.add(folders, path_to_pass)
-                print("\tFolder '" + command[1] + "' created successfully!")
 
         elif command[0] == 'mkfile':
             path = self.current_directory[:]
@@ -90,7 +89,6 @@ class Filesystem:
                 file = File(user_input[-1], command[2])
 
             self.root.add(file, path[:-1])
-            print("\tFile '" + command[1] + "' created successfully!")
 
         elif command[0] == 'pwd':
             if not self.current_directory:
@@ -196,14 +194,25 @@ class Folder(File):
         if not dst_folder_path:
             # If path is a file
             if isinstance(path, type(File('', 0))):
-                # The file is added to desired folder and to all parent directories
-                # If the desired folder is not found the file is added to the first folder that exists
+                # Checking if the file already exists
+                for item in self.contains:
+                    if path.name == item.name:
+                        print("\tThis file already exists!")
+                        return None
+
                 if not path.is_created:
                     path.is_created = True
                     self.contains.append(path)
+                    print("\tFile '" + path.name + "' created successfully!")
 
             # if path is folder
             elif path[0].is_created is False:
+                # Checking if the folder already exists
+                for item in self.contains:
+                    if path[0].name == item.name:
+                        print("\tThis folder already exists!")
+                        return None
+
                 # Once added, it changes its state so that the file is not saved again
                 path[0].is_created = True
 
@@ -211,13 +220,16 @@ class Folder(File):
                 dst_folder_path.append(path[0].name)
 
                 # Adding folder into desired one
+                print("\tFolder '" + path[0].name + "' created successfully!")
                 self.contains.append(path.pop(0))
 
                 # If there are still folders to add continue
                 if len(path) != 0:
                     self.add(path, dst_folder_path)
 
-                return None
+                # If there are no folders to add return
+                else:
+                    return None
 
         # For each item in the folder
         for child_folder in self.contains:
