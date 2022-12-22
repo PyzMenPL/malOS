@@ -22,13 +22,13 @@ class Filesystem:
                 return '/'
 
         if command[0] == 'help':
-            print("\tcd <name> - makes you enter the folder <name>")
+            print("\tcd <path> - makes you enter the folder <path>")
             print("\tcd .. - makes you go back to parent directory")
             print("\tcd / - makes you go all the way back to root directory")
             print("\tls - prints all folders and files in system")
-            print("\tmkdir <name> - creates directory inside current folder")
-            print("\tmkfile <name> - creates empty file inside current folder")
-            print("\tmkfile <name> <size> - creates file with specified size inside current folder")
+            print("\tmkdir <path> - creates directory inside current folder")
+            print("\tmkfile <path> - creates empty file inside current folder")
+            print("\tmkfile <path> <size> - creates file with specified size inside current folder")
             print("\tpwd - prints working directory")
             print("\texit - closes the program")
 
