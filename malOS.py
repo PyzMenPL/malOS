@@ -25,7 +25,7 @@ class Filesystem:
             print("\tcd <path> - makes you enter the folder <path>")
             print("\tcd .. - makes you go back to parent directory")
             print("\tcd / - makes you go all the way back to root directory")
-            print("\tls - prints all folders and files in system")
+            print("\tls - prints all folders and files in current folder")
             print("\tmkdir <path> - creates directory inside current folder")
             print("\tmkfile <path> - creates empty file inside current folder")
             print("\tmkfile <path> <size> - creates file with specified size inside current folder")
@@ -43,7 +43,7 @@ class Filesystem:
                 self.cd(command[1].split('/'))
 
         elif command[0] == 'ls':
-            self.root.print()
+            self.root.print(self.current_directory[:])
 
         # Add directory or file if it doesn't exist
         elif command[0] == 'mkdir':
@@ -242,61 +242,70 @@ class Folder(File):
                 # After the size is calculated add it to self.size
                 self.size += int(child_folder.size)
 
-    def print(self, depth=None, what_to_add=None) -> None:
+    def print(self, path: list, depth=None, what_to_add=None) -> None:
         """View the contents of subfolders"""
-        # Doesn't activate on first folder
-        if what_to_add is not None:
-            # Receives information from previous folder
-            depth.append(what_to_add)
+        # If we are in our desired folder
+        if not path:
+            # Doesn't activate on first folder
+            if what_to_add is not None:
+                # Receives information from previous folder
+                depth.append(what_to_add)
 
-        # Doesn't activate on first folder
-        if depth is None:
-            depth = []
-            print(self.__str__())
+            # Doesn't activate on first folder
+            if depth is None:
+                depth = []
+                print(self.__str__())
 
-        # If my folder contains 2 items print ║ else none
-        if len(self.contains) >= 2:
-            what_to_add = True
-        else:
-            what_to_add = False
+            # If my folder contains 2 items print ║ else none
+            if len(self.contains) >= 2:
+                what_to_add = True
+            else:
+                what_to_add = False
 
-        # If the folder is empty
-        if not self.contains:
-            # Display proper spacing
-            for dependency in depth:
-                if dependency:
-                    print('║   ', end='')
-                else:
-                    print('    ', end='')
-            print('╚══ ' + "[Empty]")
-            return None
-
-        # If the folder is not empty
-        else:
-            # For each item in the folder
-            for index in range(0, len(self.contains)):
+            # If the folder is empty
+            if not self.contains:
                 # Display proper spacing
                 for dependency in depth:
                     if dependency:
                         print('║   ', end='')
                     else:
                         print('    ', end='')
+                print('╚══ ' + "[Empty]")
+                return None
 
-                # If we are printing last element
-                if index == len(self.contains) - 1:
-                    # Don't print ║
-                    what_to_add = False
+            # If the folder is not empty
+            else:
+                # For each item in the folder
+                for index in range(0, len(self.contains)):
+                    # Display proper spacing
+                    for dependency in depth:
+                        if dependency:
+                            print('║   ', end='')
+                        else:
+                            print('    ', end='')
 
-                    # Print last element
-                    print('╚══ ' + self.contains[index].__str__())
+                    # If we are printing last element
+                    if index == len(self.contains) - 1:
+                        # Don't print ║
+                        what_to_add = False
 
-                # If we are printing any other element
-                else:
-                    print('╠══ ' + self.contains[index].__str__())
+                        # Print last element
+                        print('╚══ ' + self.contains[index].__str__())
 
-                # If the item from the folder list is a folder
-                if isinstance(self.contains[index], type(Folder(''))):
-                    self.contains[index].print(depth=depth[:], what_to_add=what_to_add)
+                    # If we are printing any other element
+                    else:
+                        print('╠══ ' + self.contains[index].__str__())
+
+                    # If the item from the folder list is a folder
+                    if isinstance(self.contains[index], type(Folder(''))):
+                        self.contains[index].print(path, depth=depth[:], what_to_add=what_to_add)
+        # If we are not in our desired folder
+        else:
+            # Look for it
+            for item in self.contains:
+                if item.name == path[0]:
+                    del path[0]
+                    item.print(path)
 
     def goto(self, path_to_folder: list, result=bool) -> bool:
         """Internal method used to check if the folder that we want to enter exists"""
@@ -323,5 +332,6 @@ if __name__ == "__main__":
     print("Type 'help' to see all available commands")
     fastFS = Filesystem()
     current_folder = "/"
+
     while True:
         current_folder = fastFS.command(input(current_folder + ' $ '))
