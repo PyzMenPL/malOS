@@ -236,8 +236,6 @@ class Folder(File):
 
     def print(self, depth=None, what_to_add=None) -> None:
         """View the contents of subfolders"""
-        # print(what_to_add)
-
         # Doesn't activate on first folder
         if what_to_add is not None:
             # Receives information from previous folder
@@ -256,7 +254,6 @@ class Folder(File):
 
         # If the folder is empty
         if not self.contains:
-            #print(depth)
             # Display proper spacing
             for dependency in depth:
                 if dependency:
@@ -270,19 +267,21 @@ class Folder(File):
         else:
             # For each item in the folder
             for index in range(0, len(self.contains)):
-                #print(index, len(self.contains), self.contains)
-                #print(depth)
                 # Display proper spacing
                 for dependency in depth:
                     if dependency:
                         print('║   ', end='')
                     else:
                         print('    ', end='')
-                #print()
 
                 # If we are printing last element
                 if index == len(self.contains) - 1:
+                    # Don't print ║
+                    what_to_add = False
+
+                    # Print last element
                     print('╚══ ' + self.contains[index].__str__())
+
                 # If we are printing any other element
                 else:
                     print('╠══ ' + self.contains[index].__str__())
@@ -315,9 +314,5 @@ class Folder(File):
 if __name__ == "__main__":
     print("Type 'help' to see all available commands")
     fastFS = Filesystem()
-    #fastFS.command("mkdir a/b/c")
-    #fastFS.command("mkfile plik1")
-    #fastFS.command("mkfile a/plik2")
-    fastFS.command("ls")
     while True:
         fastFS.command(input('$ '))
