@@ -209,8 +209,8 @@ class Folder(File):
             elif path[0].is_created is False:
                 # Checking if the folder already exists
                 for item in self.contains:
-                    if path[0].name == item.name:
-                        print("\tThis folder already exists!")
+                    if path[-1].name == item.name:
+                        print("\tFolder '" + path[0].name + "' already exists!")
                         return None
 
                 # Once added, it changes its state so that the file is not saved again
@@ -219,9 +219,22 @@ class Folder(File):
                 # We are adding folder to path because we want to create folder inside it
                 dst_folder_path.append(path[0].name)
 
-                # Adding folder into desired one
-                print("\tFolder '" + path[0].name + "' created successfully!")
-                self.contains.append(path.pop(0))
+                # If skip is true we skip path[0]
+                skip = False
+
+                # Searching through to find if the folder is already created
+                for item in self.contains:
+                    if path[0].name == item.name:
+                        skip = True
+
+                # If the folder is not created add it to self
+                if not skip:
+                    print("\tFolder '" + path[0].name + "' created successfully!")
+                    self.contains.append(path.pop(0))
+
+                # If the folder is already created delete it from list
+                else:
+                    del path[0]
 
                 # If there are still folders to add continue
                 if len(path) != 0:
@@ -233,7 +246,7 @@ class Folder(File):
 
         # For each item in the folder
         for child_folder in self.contains:
-            # Checking whether the pursuit of a folder has been completed
+            # Checking whether the search for a folder has been completed
             if len(dst_folder_path) == 0:
                 return None
 
