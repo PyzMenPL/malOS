@@ -97,7 +97,17 @@ class Filesystem:
 
             # User specified both parameters
             elif len(command) == 3:
-                file = File(user_input[-1], command[2])
+                # Make sure user typed number
+                if command[2].isdigit():
+                    file = File(user_input[-1], int(command[2]))
+                else:
+                    print("\tSpecified size is not a number!")
+
+                    # Return
+                    if self.current_directory:
+                        return self.current_directory[-1]
+                    else:
+                        return '/'
 
             self.root.add(file, path[:-1])
 
@@ -216,6 +226,7 @@ class Folder(File):
                     path.is_created = True
                     self.contains.append(path)
                     print("\tFile '" + path.name + "' created successfully!")
+                    self.size += path.size
 
             # if path is folder
             elif path[0].is_created is False:
@@ -266,6 +277,12 @@ class Folder(File):
             if isinstance(child_folder, type(Folder(''))) and child_folder.name == dst_folder_path[0]:
                 del dst_folder_path[0]
                 child_folder.add(path, dst_folder_path)
+
+                # Update folder size when adding a file
+                if isinstance(path, type(File("", 0))):
+                    if path.is_created:
+                        self.size += path.size
+
                 return None
 
         # If we get here this means that nothing happened because the folder was not found.
