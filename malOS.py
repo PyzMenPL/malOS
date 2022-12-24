@@ -86,16 +86,20 @@ class Filesystem:
                     if element != '':
                         path.append(element)
 
+                # Because it is the name of the file we want to add
+                del path[-1]
+
             # User specified name only
             if len(command) == 2:
                 file = File(user_input[-1], 0)
+                self.root.add(file, path)
 
             # User specified both parameters
             elif len(command) == 3:
                 # Make sure user typed number
                 if command[2].isdigit():
                     file = File(user_input[-1], int(command[2]))
-                    self.root.add(file, path[:-1])
+                    self.root.add(file, path)
                 else:
                     print("\tSpecified size is not a number!")
 
