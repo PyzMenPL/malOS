@@ -346,9 +346,10 @@ class Folder(File):
         else:
             # Look for it
             for item in self.contains:
-                if item.name == path[0]:
-                    del path[0]
-                    item.print(path)
+                if len(path) != 0:
+                    if item.name == path[0]:
+                        del path[0]
+                        item.print(path)
 
     def goto(self, path_to_folder: list, result=bool) -> bool:
         """Internal method used to check if the folder that we want to enter exists"""
