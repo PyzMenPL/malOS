@@ -69,14 +69,9 @@ class Filesystem:
                 if command[1].split("/") == ['', '']:
                     print("\t'/' directory can only be one!")
 
-                    # Return
-                    if self.current_directory:
-                        return self.current_directory[-1]
-                    else:
-                        return '/'
-
-                # Add folders
-                self.root.add(folders, path_to_pass)
+                else:
+                    # Add folders
+                    self.root.add(folders, path_to_pass)
 
         elif command[0] == 'mkfile':
             path = self.current_directory[:]
@@ -100,16 +95,9 @@ class Filesystem:
                 # Make sure user typed number
                 if command[2].isdigit():
                     file = File(user_input[-1], int(command[2]))
+                    self.root.add(file, path[:-1])
                 else:
                     print("\tSpecified size is not a number!")
-
-                    # Return
-                    if self.current_directory:
-                        return self.current_directory[-1]
-                    else:
-                        return '/'
-
-            self.root.add(file, path[:-1])
 
         elif command[0] == 'pwd':
             if not self.current_directory:
