@@ -266,6 +266,7 @@ class Folder(File):
             if isinstance(child_folder, type(Folder(''))) and child_folder.name == dst_folder_path[0]:
                 del dst_folder_path[0]
                 child_folder.add(path, dst_folder_path)
+                return None
 
         # If we get here this means that nothing happened because the folder was not found.
         # There's reference to self.name so the message is shown only once.
