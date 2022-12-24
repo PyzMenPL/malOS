@@ -16,6 +16,7 @@ class Filesystem:
             print("\tInvalid syntax: ", command)
             print("\tType 'help' to see all available commands")
 
+            # Return
             if self.current_directory:
                 return self.current_directory[-1]
             else:
@@ -64,6 +65,16 @@ class Filesystem:
                     if folder != '':
                         folders.append(Folder(folder))
 
+                # If user wants to create root directory
+                if command[1].split("/") == ['', '']:
+                    print("\t'/' directory can only be one!")
+
+                    # Return
+                    if self.current_directory:
+                        return self.current_directory[-1]
+                    else:
+                        return '/'
+
                 # Add folders
                 self.root.add(folders, path_to_pass)
 
@@ -109,6 +120,7 @@ class Filesystem:
             print()
             print("\tType 'help' to see all available commands")
 
+        # Return
         if self.current_directory:
             return self.current_directory[-1]
         else:
