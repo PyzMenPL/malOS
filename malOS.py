@@ -255,6 +255,11 @@ class Folder(File):
                 del dst_folder_path[0]
                 child_folder.add(path, dst_folder_path)
 
+        # If we get here this means that nothing happened because the folder was not found.
+        # There's reference to self.name so the message is shown only once.
+        if isinstance(path, type(File("", 0))) and self.name == '/':
+            print("\tCould not find folder '" + dst_folder_path[0] + "'")
+
     def sizes(self) -> None:
         for child_folder in self.contains:
             # If I am a folder
