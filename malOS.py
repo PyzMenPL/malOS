@@ -44,7 +44,28 @@ class Filesystem:
                 self.cd(command[1].split('/'))
 
         elif command[0] == 'ls':
-            self.root.print(self.current_directory[:])
+            # If user specified path
+            if len(command) == 2:
+                # We assume that user is more likely to ls without '/' at the start of the path :D
+                path = self.current_directory[:]
+
+                # If our path starts in root
+                if command[1][0] == '/':
+                    path = []
+
+                # Add every folder to path
+                for item in command[1].split('/'):
+                    path.append(item)
+
+                # If user wants to print '/' directory
+                if path == ['', '']:
+                    path = []
+
+                self.root.print(path)
+
+            # If user didn't specify path
+            else:
+                self.root.print(self.current_directory[:])
 
         # Add directory or file if it doesn't exist
         elif command[0] == 'mkdir':
