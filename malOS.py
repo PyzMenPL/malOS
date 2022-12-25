@@ -34,7 +34,7 @@ class Filesystem:
             print("\tmkfile <path> - creates empty file inside current folder")
             print("\tmkfile <path> <size> - creates file with specified size inside current folder")
             print("\tpwd - prints working directory")
-            print("\texit - closes the program")
+            print("\trm <path> - removes everything from path")
 
         elif command[0] == 'cd':
             if command[1] == '..':
@@ -138,6 +138,28 @@ class Filesystem:
 
         elif command[0] == "exit":
             sys.exit()
+
+        elif command[0] == "rm":
+            if len(command) == 2:
+                path = self.current_directory[:]
+
+                if command[1][0] == '/':
+                    path = []
+
+                for item in command[1].split('/'):
+                    if item != '':
+                        path.append(item)
+
+                file = None
+
+                if command[1].split('/') == ['', '']:
+                    # Maybe some funny Easter egg here?
+                    print("\tYou sussy baka!")
+                else:
+                    file = path.pop(-1)
+                    self.root.delete(file, path)
+            else:
+                print("\tSpecify path!")
 
         else:
             print("\tInvalid syntax: ", end='')
@@ -411,6 +433,48 @@ class Folder:
                 return False
 
         return True
+
+    def delete(self, file, path) -> int:
+        """Method for deleting files"""
+        # If we are not in desired folder
+        if len(path):
+            for item in self.contains:
+                # If we found next folder
+                if item.name == path[0]:
+                    # We make sure it is a folder
+                    if isinstance(item, type(Folder(''))):
+                        # Removing folder that we are currently in
+                        del path[0]
+
+                        # Getting the size of deleted file
+                        size_to_del = item.delete(file, path[:])
+
+                        # Changing self.size
+                        self.size -= size_to_del
+                        return size_to_del
+
+                    # If it isn't folder
+                    else:
+                        print("\t" + path[0] + " is not a folder!")
+                        return 0
+
+            # If we haven't found folder from path
+            else:
+                print("\t" + path[0] + " doesn't exist!")
+                return 0
+
+        # If we are in desired folder
+        else:
+            for item in self.contains:
+                if file == item.name:
+                    # Changing self size
+                    self.size -= item.size
+
+                    # Removing file from desired folder
+                    del self.contains[self.contains.index(item)]
+                    print("\t" + item.name + " deleted successfully!")
+
+                    return item.size
 
 
 if __name__ == "__main__":
