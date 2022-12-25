@@ -35,6 +35,7 @@ class Filesystem:
             print("\tmkdir <path> - creates directory inside current folder")
             print("\tmkfile <path> - creates empty file inside current folder")
             print("\tmkfile <path> <size> - creates file with specified size inside current folder")
+            print("\tneofetch - prints information about the system")
             print("\tpwd - prints working directory")
             print("\trm <path> - removes everything from path")
 
@@ -160,6 +161,21 @@ class Filesystem:
                     self.root.delete(file, path)
             else:
                 print("\tSpecify path!")
+
+        elif command[0] == "neofetch":
+            print("""███╗   ███╗ █████╗ ██╗      ██████╗ ███████╗
+████╗ ████║██╔══██╗██║     ██╔═══██╗██╔════╝
+██╔████╔██║███████║██║     ██║   ██║███████╗
+██║╚██╔╝██║██╔══██║██║     ██║   ██║╚════██║
+██║ ╚═╝ ██║██║  ██║███████╗╚██████╔╝███████║
+╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚══════╝""")
+            print("\tOS: malOS")
+            print("\tUptime: idk")
+            print("\tShell: Csh")
+            print("\tDE: KDE")
+            print("\tCPU: AMD")
+            print("\tGPU: Nvidia")
+            print("\tMemory: 2GB")
 
         else:
             print("\tInvalid syntax: ", end='')
