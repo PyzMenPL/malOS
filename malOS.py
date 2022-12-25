@@ -101,7 +101,6 @@ class Filesystem:
         elif command[0] == 'mkfile':
             path = self.current_directory[:]
             user_input = command[1].split("/")
-            file = None
 
             if '/' in command[1]:
                 if command[1][0] == '/':
