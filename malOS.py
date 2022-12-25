@@ -308,18 +308,6 @@ class Folder:
         if isinstance(path, type(File("", 0))) and self.name == '/':
             print("\tCould not find folder '" + dst_folder_path[0] + "'")
 
-    def sizes(self) -> None:
-        for child_folder in self.contains:
-            # If I am a folder
-            if isinstance(self, type(Folder(''))):
-                self.size += int(child_folder.size)
-
-            # If I encounter a folder
-            if isinstance(child_folder, type(Folder(''))):
-                child_folder.sizes()
-                # After the size is calculated add it to self.size
-                self.size += int(child_folder.size)
-
     def print(self, path: list, depth=None, what_to_add=None) -> None:
         """View the contents of subfolders"""
         # If we are in our desired folder
