@@ -58,7 +58,8 @@ class Filesystem:
 
                 # Add every folder to path
                 for item in command[1].split('/'):
-                    path.append(item)
+                    if item != '':
+                        path.append(item)
 
                 # If user wants to print '/' directory
                 if path == ['', '']:
