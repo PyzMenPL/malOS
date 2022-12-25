@@ -188,11 +188,12 @@ class File:
         return "File '{}'".format(self.name)
 
 
-class Folder(File):
+class Folder:
     # Folder is a child of the File class (takes its name and size from it)
     def __init__(self, name: str) -> None:
-        # The same as self.name = name and self.size = size
-        super().__init__(name=name, size=0)
+        self.name = name
+        self.size = 0
+        self.is_created = False
         self.contains = []
 
     def __iter__(self) -> object:
