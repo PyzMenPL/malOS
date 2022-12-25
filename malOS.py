@@ -395,14 +395,19 @@ class Folder:
             for sub_folder in self.contains:
                 # If folder exists
                 if path_to_folder[0] == sub_folder.name:
-                    # Delete the folder from list
-                    del path_to_folder[0]
-                    # Pass modified list further and return True or False
-                    return sub_folder.goto(path_to_folder, result)
+                    # Making sure we are cd-ing into Folder
+                    if isinstance(sub_folder, type(File(""))):
+                        print("\t'" + sub_folder.name + "' is a file!")
+                        return False
+                    else:
+                        # Delete the folder from list
+                        del path_to_folder[0]
+                        # Pass modified list further and return True or False
+                        return sub_folder.goto(path_to_folder, result)
 
             # If folder doesn't exists print error and return False
             else:
-                print("\tFolder ", path_to_folder[0], " not found")
+                print("\tFolder '" + path_to_folder[0] + "' not found")
                 return False
 
         return True
