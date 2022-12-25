@@ -175,7 +175,7 @@ class Filesystem:
 
 
 class File:
-    def __init__(self, name: str, size: int) -> None:
+    def __init__(self, name: str, size=0) -> None:
         self.name = name
         self.size = size
         self.is_created = False
