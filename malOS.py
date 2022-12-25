@@ -310,6 +310,19 @@ class Folder:
 
     def print(self, path: list, depth=None, what_to_add=None) -> None:
         """View the contents of subfolders"""
+        # Make sure we are not going to print file
+        if path:
+            for item in self.contains:
+                if path[0] == item.name:
+                    if isinstance(item, type(File("", 0))):
+                        print("\t'" + item.name + "' is a file!")
+                        return None
+                    else:
+                        break
+            else:
+                print("\tFolder '" + path[0] + "' doesn't exists!")
+                return None
+
         # If we are in our desired folder
         if not path:
             # Doesn't activate on first folder
@@ -365,6 +378,7 @@ class Folder:
                     # If the item from the folder list is a folder
                     if isinstance(self.contains[index], type(Folder(''))):
                         self.contains[index].print(path, depth=depth[:], what_to_add=what_to_add)
+
         # If we are not in our desired folder
         else:
             # Look for it
